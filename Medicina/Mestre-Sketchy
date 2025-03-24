@@ -1,62 +1,91 @@
-🧠 PROMPT FINAL – Organização de Transcrições Sketchy Micro (Versão Otimizada e Flexível)
-Você receberá a transcrição completa de uma aula do Sketchy Micro. Sua tarefa é organizá-la de forma clara, direta e visualmente estruturada, ideal para revisão rápida e eficaz.
+Você receberá a transcrição completa de uma aula do Sketchy Micro.
 
-Divida o conteúdo nas seguintes seções:
+Sua tarefa é organizar o conteúdo de forma clara, estruturada e altamente visual, ideal para revisão rápida e memorização eficaz.
 
-Título da Aula
-Indique de forma objetiva o nome do microrganismo estudado (ex: Staphylococcus aureus).
+Divida o conteúdo nas seções abaixo:
 
-Cenário Visual
-Descreva vividamente o cenário principal da imagem apresentada na aula, incluindo:
+<estrutura_geral>
 
-Ambiente geral e atmosfera da cena.
+🎓 Título da Aula
+Indique de forma objetiva o nome do microrganismo estudado.
+Exemplo: Staphylococcus aureus
 
-Personagens e objetos centrais.
+🖼️ Cenário Visual
+Descreva de forma vívida a cena principal da aula. Inclua:
 
-Cores predominantes e estilo visual.
+Ambiente geral (ex: castelo, cozinha, laboratório)
 
-Elementos marcantes que ajudam na memorização visual e espacial.
+Atmosfera e estilo (ex: sombrio, colorido, infantil)
 
-Símbolos-Chave
-Liste e explique todos os símbolos visuais da cena, organizando-os em categorias.
+Personagens e objetos centrais
 
-Para cada símbolo, inclua:
+Cores predominantes e estilo visual
 
-Descrição visual específica
+Elementos marcantes que favorecem memorização visual ou espacial
+</estrutura_geral>
 
-Significado clínico, diagnóstico, estrutural ou terapêutico
+<simbolos_chave>
 
-Use as seguintes categorias como base, mas fique livre para adaptar, renomear ou criar novas categorias conforme o conteúdo da aula:
+🧩 Símbolos-Chave
+Liste todos os símbolos visuais presentes na cena. Para cada símbolo, inclua:
+
+Descrição visual detalhada (o que é e como aparece na cena)
+
+Significado clínico/biológico/farmacológico (o que representa)
+
+Organize os símbolos por categorias. Use as abaixo como referência, mas fique à vontade para adaptar, renomear ou criar novas conforme a necessidade da aula:
 
 🔬 Estrutura e Características Gerais
-(Ex: Gram, forma, metabolismo, enzimas básicas)
+(ex: corante roxo = Gram-positivo; formato de cacho = cocos em cacho)
 
 🧪 Diagnóstico Diferencial
-(Ex: meios de cultura, testes laboratoriais, coloração)
+(ex: placas de agar, catalase, coagulase, PCR)
 
 🦠 Fatores de Virulência
-(Ex: toxinas, proteínas de adesão, mecanismos de evasão imune)
+(ex: toxinas, cápsula, proteínas de adesão)
 
 🧍‍♂️ Doenças Clínicas Associadas
-(Ex: infecções cutâneas, intoxicações, pneumonias, etc.)
+(ex: abscessos, septicemia, síndrome do choque tóxico)
 
 💊 Tratamento e Resistência
-(Ex: antibióticos, mecanismos de resistência, terapias específicas)
+(ex: resistência à meticilina representada por armadura de metal)
 
-📌 Outras Categorias (se aplicável)
+📌 Outros (se necessário)
 Exemplos:
 
 Transmissão e Epidemiologia
 
-Prevenção e Profilaxia
+Prevenção e Vacinação
 
-Associação com Populações Específicas
+Complicações Raras
 
-Complicações ou Manifestações Especiais
+Associação com Grupos de Risco
+</simbolos_chave>
 
-✅ Certifique-se de incluir todos os símbolos presentes na cena, mesmo os pequenos.
-❌ Não repetir a explicação dos símbolos em outras seções — a interpretação completa deve estar concentrada aqui.
+<dicas_extra>
 
-Pontos Extras e Dicas de Memorização
-Inclua mnemônicos visuais, analogias, curiosidades ou padrões fáceis de lembrar que foram utilizados na cena.
-Dê destaque a dicas práticas para fixar os símbolos mais difíceis ou detalhes que costumam ser cobrados em provas.
+🧠 Dicas de Memorização e Padrões Visuais
+Inclua analogias, padrões recorrentes, piadas visuais, ou mnemônicos usados na aula. Destaque:
+
+Dicas visuais fáceis de lembrar
+
+Associações com temas já conhecidos
+
+Itens pequenos ou sutis que costumam passar despercebidos
+
+Pontos que frequentemente aparecem em provas
+</dicas_extra>
+
+<instrucoes_gerais> ✅ Certifique-se de extrair e explicar absolutamente todos os símbolos visuais da cena, incluindo:
+
+Itens de fundo
+
+Objetos pequenos ou parcialmente escondidos
+
+Elementos visuais recorrentes (mesmo que pareçam óbvios ou já conhecidos)
+
+Símbolos usados de forma metafórica, irônica ou sutil
+
+➡️ Nenhum símbolo deve ser ignorado. A análise deve ser completa e exaustiva.
+
+❌ Não repita explicações em outras seções — toda interpretação dos símbolos deve estar concentrada na seção “🧩 Símbolos-Chave”. </instrucoes_gerais>
