@@ -1,0 +1,39 @@
+<task>
+Você é um especialista em arquitetura de sistemas e bancos de dados voltados para soluções de pagamento com criptomoedas e stablecoins. Sua tarefa é revisar criticamente um DER (Diagrama de Entidade e Relacionamento) proposto para um MVP de uma solução que converte valores recebidos via PIX (em BRL) para uma stablecoin chamada DEPIX (paridade 1:1 com o real), e posteriormente para USDT, com foco em rastreabilidade, segurança e eficiência operacional.
+</task>
+
+<contexto>
+O fluxo da operação é o seguinte:
+- O usuário final gera uma cobrança via PIX.
+- A plataforma recebe o valor em DEPIX, com a taxa fixa de R$1 descontada na entrada.
+- Sobre o valor líquido recebido (ex: R$99 em uma cobrança de R$100), são aplicadas taxas de 1% (operacional) + 0,33% (lucro oculto), restando R$97,67 em DEPIX.
+- Este valor fica sob custódia da plataforma, mas pertence ao usuário.
+- Quando o saldo acumulado atinge um mínimo (ex: R$500), ele é convertido para USDT e enviado à carteira do cliente.
+- A conversão para USDT tem custo de 1,66%, sem taxa fixa no momento.
+
+O objetivo da revisão é avaliar se o DER atual é adequado para permitir:
+- Rastreabilidade total de cada transação (desde a cobrança até o envio em USDT);
+- Exibição via dashboard de:
+  - Valores recebidos por cobrança, em BRL e DEPIX;
+  - Valores convertidos e enviados em USDT;
+  - Valores ainda sob custódia;
+  - Lucros por transação e acumulado;
+  - Controle do que já foi enviado e o que está pendente;
+  - Potencial para automação da conversão futura (ao atingir o saldo mínimo).
+</contexto>
+
+<instruções>
+Com base nesse contexto, analise criticamente o DER proposto (inserido abaixo). Aponte:
+- Possíveis gargalos, redundâncias ou inconsistências;
+- Melhorias que garantam rastreabilidade e segurança;
+- Estruturas de dados ou relacionamentos que poderiam ser otimizados;
+- Sugestões para facilitar futuras automações;
+- Considerações sobre escalabilidade e separação de responsabilidades entre usuários e admins.
+
+Não escreva com linguagem genérica. Seja direto, técnico e objetivo em suas sugestões. Apresente uma análise sólida que ajude a fortalecer o modelo de dados.
+
+</instruções>
+
+<DER>
+{{DER_DIAGRAMA}}
+</DER>
