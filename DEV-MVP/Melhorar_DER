@@ -3,7 +3,7 @@
  </task>
  
  <contexto>
- O DER enviado representa a versão atual do banco de dados em uso ou em desenvolvimento. A sugestão adicional tem o objetivo de melhorar uma parte específica do modelo — seja em rastreabilidade, performance, normalização, separação de responsabilidades, flexibilidade ou suporte a novas funcionalidades.
+ O DER enviado representa a versão atual banco de dados em desenvolvimento para um MVP. A sugestão adicional tem o objetivo de melhorar uma parte específica do modelo — seja em rastreabilidade, performance, normalização, separação de responsabilidades, flexibilidade ou suporte a novas funcionalidades.
  
  Você deve:
  - Entender o funcionamento do sistema proposto no DER;
