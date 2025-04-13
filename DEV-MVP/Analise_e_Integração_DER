@@ -1,0 +1,44 @@
+<task>
+Você é um arquiteto de dados especialista em modelagem relacional. Sua tarefa é analisar profundamente dois DERs distintos (DER1 e DER2), ambos desenvolvidos para o mesmo sistema de pagamentos com conversão de BRL para USDT, e integrá-los em um único DER final coeso, eficiente e escalável.
+</task>
+
+<contexto>
+Os dois DERs foram criados em momentos diferentes, com focos complementares, e agora precisam ser unificados em uma única estrutura que atenda a todos os requisitos do sistema.
+
+Esse sistema envolve:
+- Geração de cobranças via PIX;
+- Recebimento em DEPIX (1:1 com BRL);
+- Aplicação de taxas (fixa e percentual);
+- Custódia do saldo do cliente;
+- Conversão do saldo acumulado para USDT ao atingir valor mínimo;
+- Envio dos USDT para carteira do cliente;
+- Dashboard para admins e usuários com visibilidade de transações, saldos, lucros e status.
+
+O objetivo é garantir que o DER final:
+- Mantenha rastreabilidade completa das transações;
+- Evite redundâncias;
+- Permita consultas otimizadas para relatórios e dashboards;
+- Atenda tanto as visões de admin quanto de usuário final;
+- Esteja preparado para automações e escalabilidade futura.
+
+</contexto>
+
+<instruções>
+Analise cuidadosamente os dois DERs abaixo. Depois, integre-os de forma inteligente, eliminando sobreposições e mantendo a lógica de negócios íntegra. Sua saída deve ser:
+
+1. Um DER final unificado e bem estruturado (pode ser descritivo ou em texto com entidades e relacionamentos);
+2. Justificativas técnicas para a estrutura proposta;
+3. Pontos de atenção ou melhorias possíveis;
+4. Sugestões de índices ou chaves para garantir performance e integridade referencial.
+
+Seja técnico, direto e detalhado. A saída será usada como base para a próxima versão do sistema.
+
+</instruções>
+
+<DER1>
+{{DER1}}
+</DER1>
+
+<DER2>
+{{DER2}}
+</DER2>
