@@ -1,274 +1,37 @@
 <task>
-Você é um arquiteto de dados especialista em modelagem relacional com foco em produtos digitais escaláveis. Sua tarefa é analisar um DER atual de um sistema de pagamentos e, com base em uma sugestão de melhoria específica, ajustar e aprimorar esse modelo de forma inteligente, mantendo as funções mínimas viáveis (MVP) e preparando-o para escala futura.
-</task>
-
-<contexto>
-O DER enviado representa a versão atual do banco de dados em uso ou em desenvolvimento. A sugestão adicional tem o objetivo de melhorar uma parte específica do modelo — seja em rastreabilidade, performance, normalização, separação de responsabilidades, flexibilidade ou suporte a novas funcionalidades.
-
-Você deve:
-- Entender o funcionamento do sistema proposto no DER;
-- Avaliar o impacto e a relevância da sugestão recebida;
-- Atualizar o DER da melhor maneira possível, mantendo simplicidade para o MVP e pensando na escalabilidade futura.
-
-</contexto>
-
-<instruções>
-1. Analise criticamente o DER original para entender sua estrutura e lógica de dados;
-2. Avalie tecnicamente a sugestão de melhoria recebida, considerando:
-   - Se ela faz sentido para o estágio atual do produto (MVP);
-   - Se ela ajuda a evitar problemas futuros de escala, manutenção ou performance;
-3. Ajuste o DER atual para incorporar essa melhoria, de forma eficiente e coerente com o restante da estrutura;
-4. Mantenha uma linguagem técnica, clara e objetiva.
-
-Sua saída deve conter:
-- O DER atualizado (pode ser descritivo ou estruturado em texto com entidades, atributos e relacionamentos);
-- Justificativas técnicas para as mudanças aplicadas;
-- Possíveis riscos ou cuidados relacionados à nova modelagem;
-- Sugestões de boas práticas para garantir escalabilidade e integridade dos dados.
-
-</instruções>
-
-<DER_ATUAL>
-{{## DER Final Unificado Completo - Versão 4 (Final)
-
-Este documento apresenta o Diagrama Entidade-Relacionamento (DER) Final Unificado - Versão 4, completo e detalhado, para o sistema de pagamentos BRL-USDT. Não há referências a versões anteriores, sendo esta a versão final consolidada.
-
-**1. DER Final Unificado (Descritivo - Versão 4 - Final):**
-
-**Entidades:**
-
-* **`usuarios`:**
-    * `id` (PK, INT, Auto Incremento) - Identificador único do usuário. Chave primária auto-incrementável.
-    * `nome` (VARCHAR) - Nome completo do usuário.
-    * `email` (VARCHAR, UNIQUE) - Endereço de e-mail do usuário. Deve ser único por usuário.
-    * `tipo` (ENUM: 'USUARIO', 'ADMIN', etc.) - Tipo de usuário no sistema (ex: 'USUARIO' para usuários comuns, 'ADMIN' para administradores). ENUM para garantir valores controlados.
-    * `status` (ENUM: 'ATIVO', 'INATIVO', 'PENDENTE', etc.) - Status da conta do usuário (ex: 'ATIVO' para contas ativas, 'INATIVO' para desativadas, 'PENDENTE' para contas aguardando ativação). ENUM para garantir valores controlados.
-    * `soft_deletado` (BOOLEAN, DEFAULT FALSE) - Flag de soft-delete. Indica se o usuário foi logicamente deletado (em vez de exclusão física). Valor padrão FALSE (não deletado).
-    * `data_criacao` (TIMESTAMP) - Data e hora de criação do registro do usuário.
-    * `data_atualizacao` (TIMESTAMP) - Data e hora da última atualização do registro do usuário.
-
-* **`autenticacao`:**
-    * `id_usuario` (FK -> `usuarios.id`, PK) - Chave estrangeira referenciando a tabela `usuarios`. Também é parte da chave primária composta desta tabela, garantindo relação 1:1 com `usuarios`.
-    * `senha_hash` (STRING) - Hash da senha do usuário. Armazenar hashes em vez de senhas em texto puro por segurança.
-    * `mfa_ativo` (BOOLEAN, DEFAULT FALSE) - Flag indicando se a autenticação multi-fator (MFA) está ativa para o usuário. Valor padrão FALSE (MFA desativado).
-    * `ultimo_login` (TIMESTAMP, NULL) - Data e hora do último login bem-sucedido do usuário. Nulo se o usuário nunca fez login.
-    * `data_criacao` (TIMESTAMP) - Data e hora de criação do registro de autenticação.
-    * `data_atualizacao` (TIMESTAMP) - Data e hora da última atualização do registro de autenticação.
-
-* **`carteiras_depix`:**
-    * `id` (PK, INT, Auto Incremento) - Identificador único da carteira DEPIX. Chave primária auto-incrementável.
-    * `id_usuario` (FK -> `usuarios.id`, UNIQUE) - Chave estrangeira referenciando a tabela `usuarios`. Restrição UNIQUE garante relação 1:1 com `usuarios`.
-    * `endereco_depix` (VARCHAR, NOT NULL, UNIQUE) - Endereço da carteira DEPIX. Deve ser único e não nulo.
-    * `status` (ENUM: 'ATIVA', 'INATIVA', 'PENDENTE', etc.) - Status da carteira DEPIX (ex: 'ATIVA' para carteiras em uso, 'INATIVA' para carteiras desativadas). ENUM para garantir valores controlados.
-    * `data_criacao` (TIMESTAMP) - Data e hora de criação do registro da carteira DEPIX.
-    * `data_atualizacao` (TIMESTAMP) - Data e hora da última atualização do registro da carteira DEPIX.
-
-* **`carteiras_usdt`:**
-    * `id` (PK, INT, Auto Incremento) - Identificador único da carteira USDT. Chave primária auto-incrementável.
-    * `id_usuario` (FK -> `usuarios.id`, UNIQUE) - Chave estrangeira referenciando a tabela `usuarios`. Restrição UNIQUE garante relação 1:1 com `usuarios`.
-    * `endereco_usdt` (VARCHAR, UNIQUE) - Endereço da carteira USDT de custódia do usuário. Deve ser único.
-    * `status` (ENUM: 'ATIVA', 'INATIVA', 'PENDENTE', etc.) - Status da carteira USDT (ex: 'ATIVA' para carteiras em uso, 'INATIVA' para desativadas). ENUM para garantir valores controlados.
-    * `data_criacao` (TIMESTAMP) - Data e hora de criação do registro da carteira USDT.
-    * `data_atualizacao` (TIMESTAMP) - Data e hora da última atualização do registro da carteira USDT.
-
-* **`outras_carteiras`:**
-    * `id` (PK, INT, Auto Incremento) - Identificador único para outros tipos de carteiras. Chave primária auto-incrementável.
-    * `id_usuario` (FK -> `usuarios.id`) - Chave estrangeira referenciando a tabela `usuarios`. Permite relação 1:N com `usuarios`.
-    * `tipo_carteira` (VARCHAR) - Tipo da carteira (ex: 'LIGHTNING', 'LBTC', 'BITCOIN_ONCHAIN').  VARCHAR para permitir flexibilidade e expansão.
-    * `endereco_carteira` (VARCHAR, UNIQUE) - Endereço da carteira para o tipo especificado. Deve ser único.
-    * `rede_blockchain` (VARCHAR, NULL) - Rede blockchain associada à carteira (ex: 'LIGHTNING_NETWORK', 'BITCOIN_MAINNET', 'LIQUID_NETWORK'). Nulo se não aplicável.
-    * `status` (ENUM: 'ATIVA', 'INATIVA', 'PENDENTE', etc.) - Status da carteira (ex: 'ATIVA', 'INATIVA', 'PENDENTE'). ENUM para garantir valores controlados.
-    * `data_criacao` (TIMESTAMP) - Data e hora de criação do registro da outra carteira.
-    * `data_atualizacao` (TIMESTAMP) - Data e hora da última atualização do registro da outra carteira.
-
-* **`taxas_configuracao`:**
-    * `id` (PK, UUID, DEFAULT UUID()) - Identificador único da configuração de taxas. Chave primária UUID gerada por padrão.
-    * `tipo_operacao` (ENUM: 'DEPOSITO', 'CONVERSAO') - Tipo de operação ao qual a taxa se aplica (ex: 'DEPOSITO', 'CONVERSAO'). ENUM para garantir valores controlados.
-    * `nome` (VARCHAR) - Nome descritivo da configuração de taxas.
-    * `taxa_fixa_depix` (DECIMAL(15,8)) - Valor da taxa fixa em DEPIX. DECIMAL(15,8) para precisão financeira.
-    * `taxa_percentual_operacional` (DECIMAL(5,4)) - Taxa percentual operacional. DECIMAL(5,4) para valores percentuais.
-    * `receita_percentual_operacional` (DECIMAL(5,4)) - Percentual da receita operacional. DECIMAL(5,4) para valores percentuais.
-    * `receita_percentual_oculta` (DECIMAL(5,4)) - Percentual da receita oculta. DECIMAL(5,4) para valores percentuais.
-    * `vigente_desde` (TIMESTAMP) - Data e hora de início da vigência da configuração de taxas.
-    * `vigente_ate` (TIMESTAMP, NULL) - Data e hora de fim da vigência da configuração de taxas. Nulo se a taxa for vigente indefinidamente.
-    * `data_criacao` (TIMESTAMP) - Data e hora de criação do registro de configuração de taxas.
-    * `data_atualizacao` (TIMESTAMP, NULL) - Data e hora da última atualização do registro de configuração de taxas.
-
-* **`depositos`:**
-    * `id` (PK, UUID, DEFAULT UUID()) - Identificador único do depósito. Chave primária UUID gerada por padrão.
-    * `id_usuario` (FK -> `usuarios.id`) - Chave estrangeira referenciando a tabela `usuarios`.
-    * `id_taxa_configuracao` (FK -> `taxas_configuracao.id`) - Chave estrangeira referenciando a tabela `taxas_configuracao`.
-    * `ticket_brl` (DECIMAL(15,2)) - Valor do ticket em BRL. DECIMAL(15,2) para moeda brasileira.
-    * `ticket_depix` (DECIMAL(15,8)) - Valor do ticket em DEPIX. DECIMAL(15,8) para precisão financeira.
-    * `taxa_fixa_depix` (DECIMAL(15,8)) - Snapshot da taxa fixa DEPIX aplicada no momento do depósito.
-    * `taxa_percentual_operacional_depix` (DECIMAL(15,8)) - Snapshot da taxa percentual operacional DEPIX aplicada no momento do depósito.
-    * `receita_operacional_depix` (DECIMAL(15,8)) - Snapshot da receita operacional DEPIX aplicada no momento do depósito.
-    * `receita_oculta_depix` (DECIMAL(15,8)) - Snapshot da receita oculta DEPIX aplicada no momento do depósito.
-    * `total_taxas_depix` (DECIMAL(15,8)) - Total de taxas DEPIX cobradas no depósito.
-    * `final_liquido_depix` (DECIMAL(15,8)) - Valor final líquido em DEPIX após taxas.
-    * `status` (VARCHAR) - Status do depósito (ex: 'PENDENTE', 'CONFIRMADO', 'CANCELADO').  ENUM recomendado para valores controlados.
-    * `comprovante_pix` (VARCHAR, NULL) - Hash ou identificador do comprovante PIX do depósito. Nulo se não disponível.
-    * `data_criacao` (TIMESTAMP) - Data e hora de criação do registro de depósito.
-    * `data_atualizacao` (TIMESTAMP, NULL) - Data e hora da última atualização do registro de depósito.
-
-* **`conversoes`:**
-    * `id` (PK, UUID, DEFAULT UUID()) - Identificador único da conversão. Chave primária UUID gerada por padrão.
-    * `id_usuario` (FK -> `usuarios.id`) - Chave estrangeira referenciando a tabela `usuarios`.
-    * `id_admin_aprovador` (FK -> `usuarios.id`, NULL) - Chave estrangeira referenciando a tabela `usuarios` para o administrador que aprovou a conversão (se aplicável). Nulo se aprovação não for necessária.
-    * `id_taxa_configuracao` (FK -> `taxas_configuracao.id`) - Chave estrangeira referenciando a tabela `taxas_configuracao`.
-    * `inicial_depix` (DECIMAL(15,8)) - Valor inicial em DEPIX para a conversão.
-    * `taxa_fixa_depix` (DECIMAL(15,8)) - Snapshot da taxa fixa DEPIX aplicada no momento da conversão.
-    * `taxa_percentual_operacional_depix` (DECIMAL(15,8)) - Snapshot da taxa percentual operacional DEPIX aplicada no momento da conversão.
-    * `receita_operacional_depix` (DECIMAL(15,8)) - Snapshot da receita operacional DEPIX aplicada no momento da conversão.
-    * `receita_oculta_depix` (DECIMAL(15,8)) - Snapshot da receita oculta DEPIX aplicada no momento da conversão.
-    * `total_taxas_depix` (DECIMAL(15,8)) - Total de taxas DEPIX cobradas na conversão.
-    * `final_liquido_depix` (DECIMAL(15,8)) - Valor final líquido em DEPIX após taxas.
-    * `cotacao_usdt` (DECIMAL(15,8), NULL) - Cotação USDT utilizada na conversão. Nulo se cotação não aplicável ou pendente.
-    * `valor_usdt_enviado` (DECIMAL(15,8), NULL) - Valor em USDT enviado ao usuário. Nulo até a conversão ser concluída.
-    * `status` (VARCHAR) - Status da conversão (ex: 'PENDENTE', 'CONCLUIDO', 'CANCELADO'). ENUM recomendado para valores controlados.
-    * `comprovante_blockchain` (VARCHAR, NULL) - Hash da transação blockchain do envio de USDT. Nulo até a conversão ser concluída.
-    * `data_criacao` (TIMESTAMP) - Data e hora de criação do registro de conversão.
-    * `data_atualizacao` (TIMESTAMP, NULL) - Data e hora da última atualização do registro de conversão.
-
-* **`tokens_jwt`:**
-    * `id` (PK, INT, Auto Incremento) - Identificador único do token JWT. Chave primária auto-incrementável.
-    * `tipo` (ENUM: 'ACESSO', 'REFRESH', etc.) - Tipo do token JWT (ex: 'ACESSO', 'REFRESH'). ENUM para garantir valores controlados.
-    * `token_mascarado` (STRING) - Versão mascarada do token JWT (por segurança, não armazenar o token completo em texto puro).
-    * `validade_inicio` (TIMESTAMP) - Data e hora de início da validade do token.
-    * `validade_fim` (TIMESTAMP) - Data e hora de fim da validade do token.
-    * `comentario_tecnico` (STRING, NULL) - Comentário técnico ou metadados sobre o token (opcional).
-    * `soft_deletado` (BOOLEAN, DEFAULT FALSE) - Flag de soft-delete para tokens (ex: para invalidar tokens logicamente). Valor padrão FALSE (não deletado).
-    * `data_criacao` (TIMESTAMP) - Data e hora de criação do registro do token JWT.
-    * `data_atualizacao` (TIMESTAMP) - Data e hora da última atualização do registro do token JWT.
-
-* **`logs_sistema`:**
-    * `id` (PK, INT, Auto Incremento) - Identificador único do log de sistema. Chave primária auto-incrementável.
-    * `id_entidade_afetada` (INT) - Identificador numérico da entidade afetada pela ação logada.
-    * `tipo_entidade_afetada` (VARCHAR) - Tipo da entidade afetada (ex: 'usuarios', 'depositos', 'conversoes'). VARCHAR para flexibilidade.
-    * `id_referencia` (UUID ou INT, dependendo da `tipo_entidade_afetada`) - Identificador específico do registro da entidade afetada. Pode ser UUID ou INT dependendo do tipo da entidade.
-    * `tipo_acao` (VARCHAR) - Tipo de ação logada (ex: 'CRIACAO', 'ALTERACAO', 'EXCLUSAO', 'LOGIN', 'DEPOSITO', 'CONVERSAO'). ENUM recomendado para valores controlados.
-    * `detalhe_acao` (TEXT) - Detalhes da ação logada em formato texto.
-    * `timestamp_ocorrencia` (TIMESTAMP) - Data e hora em que a ação ocorreu.
-    * `id_usuario_executor` (FK -> `usuarios.id`, NULL) - Chave estrangeira referenciando a tabela `usuarios` para o usuário que executou a ação (se aplicável). Nulo se a ação não foi iniciada por um usuário específico.
-    * `data_criacao` (TIMESTAMP) - Data e hora de criação do registro de log.
-    * `data_atualizacao` (TIMESTAMP) - Data e hora da última atualização do registro de log.
-
-* **`saldos_depix`:**
-    * `id` (PK, INT, Auto Incremento) - Identificador único do registro de saldo DEPIX. Chave primária auto-incrementável.
-    * `id_usuario` (FK -> `usuarios.id`) - Chave estrangeira referenciando a tabela `usuarios`.
-    * `id_deposito` (FK -> `depositos.id`, NULL) - Chave estrangeira referenciando a tabela `depositos`. Nulo se a transação não for um depósito.
-    * `id_conversao` (FK -> `conversoes.id`, NULL) - Chave estrangeira referenciando a tabela `conversoes`. Nulo se a transação não for uma conversão.
-    * `tipo_transacao` (ENUM: 'DEPOSITO', 'CONVERSAO_SAIDA', 'REVERSAO_DEPOSITO', etc.) - Tipo de transação que afetou o saldo DEPIX (ex: 'DEPOSITO', 'CONVERSAO_SAIDA', 'REVERSAO_DEPOSITO'). ENUM para garantir valores controlados.
-    * `valor_alteracao_depix` (DECIMAL(15,8)) - Valor da alteração no saldo DEPIX. Pode ser positivo (crédito) ou negativo (débito). DECIMAL(15,8) para precisão financeira.
-    * `saldo_depix_anterior` (DECIMAL(15,8)) - Saldo DEPIX antes da transação.
-    * `saldo_depix_atual` (DECIMAL(15,8)) - Saldo DEPIX após a transação.
-    * `data_ocorrencia` (TIMESTAMP) - Data e hora da ocorrência da transação.
-    * `data_criacao` (TIMESTAMP) - Data e hora de criação do registro de saldo DEPIX.
-    * **CONSTRAINT `chk_saldo_depix_transacao` CHECK (`id_deposito` IS NOT NULL OR `id_conversao` IS NOT NULL)** - Constraint CHECK para garantir que *exatamente um* dos campos `id_deposito` ou `id_conversao` seja preenchido (não nulo) para cada registro. Garante integridade referencial e associa o registro de saldo a uma transação válida.
-
-**2. Relacionamentos (DER Final Descritivo - Versão 4 - Final):**
-
-* `usuarios` **1:1** `carteiras_depix` - Um usuário possui **uma e apenas uma** carteira DEPIX para depósito.
-* `usuarios` **1:1** `carteiras_usdt` - Um usuário possui **uma e apenas uma** carteira USDT para custódia.
-* `usuarios` **1:N** `outras_carteiras` - Um usuário pode ter **zero ou mais** outras carteiras de diferentes tipos (ex: Lightning, LBTC).
-* `usuarios` **1:1** `autenticacao` - Um usuário possui **uma e apenas uma** credencial de autenticação.
-* `usuarios` **1:N** `tokens_jwt` - Um usuário pode ter **zero ou mais** tokens JWT (tokens de acesso e refresh).
-* `usuarios` **1:N** `logs_sistema` - Um usuário pode ser o executor de **zero ou mais** ações logadas no sistema.
-* `taxas_configuracao` **1:N** `depositos` - Uma configuração de taxa pode ser aplicada a **zero ou mais** depósitos.
-* `taxas_configuracao` **1:N** `conversoes` - Uma configuração de taxa pode ser aplicada a **zero ou mais** conversões.
-* `usuarios` **1:N** `saldos_depix` - Um usuário possui **zero ou mais** registros no histórico de saldo DEPIX.
-* `depositos` **1:N** `saldos_depix` - Um depósito gera **um ou mais** registros de saldo DEPIX (pelo menos um para o crédito inicial).
-* `conversoes` **1:N** `saldos_depix` - Uma conversão gera **um ou mais** registros de saldo DEPIX (pelo menos um para o débito da conversão).
-* `usuarios` **1:N** `conversoes` (como `id_admin_aprovador`) - Um administrador pode aprovar **zero ou mais** conversões.
-
-**3. Justificativas Técnicas Refinadas (Versão 4 - Final):**
-
-* **Integridade Referencial Aprimorada em `saldos_depix`:** A substituição do FK polimórfico por FKs específicos (`id_deposito`, `id_conversao`) e a adição da constraint `CHECK` garantem a integridade referencial no nível do banco de dados. Isso elimina ambiguidades e o risco de dados inconsistentes, assegurando que cada registro de saldo esteja sempre associado a uma transação válida (depósito ou conversão).
-* **Segurança e Isolamento de Carteiras:** A separação das tabelas `carteiras_depix` e `carteiras_usdt` oferece maior isolamento e segurança para as informações de carteiras primárias (DEPIX para depósito, USDT para custódia). Facilita a gestão e auditoria específica de cada tipo de carteira.
-* **Escalabilidade e Flexibilidade com `outras_carteiras`:** A tabela `outras_carteiras` prepara o sistema para escalabilidade futura e suporte a diferentes tipos de carteiras (Lightning, LBTC, etc.). A estrutura genérica e extensível permite adicionar novos tipos sem grandes alterações no modelo de dados principal.
-* **Relações 1:1 para Carteiras Principais:** As relações 1:1 entre `usuarios` e `carteiras_depix`/`carteiras_usdt` refletem a exigência de que cada usuário possua uma carteira dedicada de cada tipo, simplificando a lógica de acesso e garantindo unicidade.
-* **Histórico de Saldos Detalhado (`saldos_depix`):** A tabela `saldos_depix` fornece um histórico completo das alterações de saldo DEPIX, essencial para auditoria, rastreabilidade e relatórios financeiros.
-
-**4. Pontos de Atenção e Melhorias Possíveis (Versão 4 - Final):**
-
-* **Implementação Robusta da Constraint `CHECK`:**  A correta implementação da constraint `CHECK` em `saldos_depix` é *crucial*. Verificar a compatibilidade e comportamento no SGBD específico (PostgreSQL/Supabase). Em caso de limitações, garantir a validação da exclusividade dos FKs na camada da aplicação e/ou via triggers no banco de dados. Testes exaustivos são essenciais.
-* **Logs Polimórficos (`logs_sistema`) - Avaliação Contínua:** Embora a abordagem polimórfica para logs seja aceitável no escopo atual, monitorar o crescimento da tabela `logs_sistema` e avaliar a performance de consultas ao longo do tempo. Para sistemas de alta escala ou com requisitos de auditoria extremamente rigorosos, considerar a migração para soluções de log mais especializadas (tabelas de log por entidade ou ferramentas externas de log management) no futuro, se necessário.
-* **Consistência de PKs (Revisão Estratégica Futura):** A estratégia mista de PKs (INT e UUID) é funcional, mas a padronização completa para UUID (ou BIGINT) em *todas* as tabelas deve ser considerada em revisões estratégicas futuras, especialmente em preparação para arquiteturas distribuídas ou microsserviços. A padronização pode simplificar o desenvolvimento, ORMs e a gestão de PKs em sistemas complexos e escaláveis. A decisão final deve ser baseada em uma análise custo-benefício e nos requisitos de longo prazo do sistema.
-
-**5. Sugestões de Índices e Chaves (Versão 4 - Final):**
-
-* **`usuarios`:**
-    * PK: `id` (Índice Clusterizado - se INT auto-incremento)
-    * UNIQUE: `email` (Índice Secundário)
-    * Índice para consultas por `status`, `tipo` (Índices Secundários, especialmente se usados em filtros frequentes)
-* **`autenticacao`:**
-    * PK: `id_usuario` (Índice Clusterizado, herda índice de `usuarios.id` devido à relação 1:1)
-    * Índice para consultas por `ultimo_login` (Índice Secundário, se usado para relatórios ou ordenação)
-* **`carteiras_depix`:**
-    * PK: `id` (Índice Clusterizado - se INT auto-incremento)
-    * FK, UNIQUE: `id_usuario` (UNIQUE INDEX, Índice Clusterizado secundário se apropriado para 1:1 relationship enforcement and fast lookup)
-    * UNIQUE: `endereco_depix` (Índice Secundário)
-    * Índice para consultas por `status` (Índice Secundário)
-* **`carteiras_usdt`:**
-    * PK: `id` (Índice Clusterizado - se INT auto-incremento)
-    * FK, UNIQUE: `id_usuario` (UNIQUE INDEX, Índice Clusterizado secundário se apropriado para 1:1 relationship enforcement and fast lookup)
-    * UNIQUE: `endereco_usdt` (Índice Secundário)
-    * Índice para consultas por `status` (Índice Secundário)
-* **`outras_carteiras`:**
-    * PK: `id` (Índice Clusterizado - se INT auto-incremento)
-    * FK: `id_usuario` (Índice Secundário para joins)
-    * UNIQUE: `endereco_carteira` (Índice Secundário)
-    * Índice para consultas por `tipo_carteira`, `rede_blockchain`, `status` (Índice Composto se necessário para filtros combinados)
-* **`taxas_configuracao`:**
-    * PK: `id` (Índice Clusterizado - se UUID, índice clusterizado padrão para UUIDs no PostgreSQL)
-    * Índice para consultas por `tipo_operacao`, `vigente_desde`, `vigente_ate` (Índices Secundários e/ou Índice Composto dependendo dos padrões de consulta)
-* **`depositos`:**
-    * PK: `id` (Índice Clusterizado - se UUID, índice clusterizado padrão para UUIDs no PostgreSQL)
-    * FK: `id_usuario` (Índice Secundário para joins)
-    * FK: `id_taxa_configuracao` (Índice Secundário para joins)
-    * Índice para consultas por `status`, `data_criacao` (Índices Secundários e/ou Índice Composto para relatórios e filtros)
-* **`conversoes`:**
-    * PK: `id` (Índice Clusterizado - se UUID, índice clusterizado padrão para UUIDs no PostgreSQL)
-    * FK: `id_usuario` (Índice Secundário para joins)
-    * FK: `id_admin_aprovador` (Índice Secundário para joins, se consultas frequentes por admin aprovador)
-    * FK: `id_taxa_configuracao` (Índice Secundário para joins)
-    * Índice para consultas por `status`, `data_criacao` (Índices Secundários e/ou Índice Composto para relatórios e filtros)
-* **`tokens_jwt`:**
-    * PK: `id` (Índice Clusterizado - se INT auto-incremento)
-    * Índice para consultas por `tipo`, `validade_fim` (Índices Secundários, se usados para limpeza de tokens expirados)
-* **`logs_sistema`:**
-    * PK: `id` (Índice Clusterizado - se INT auto-incremento)
-    * Índice para consultas por `tipo_entidade_afetada`, `tipo_acao`, `timestamp_ocorrencia`, `id_usuario_executor` (Índices Secundários e/ou Índices Compostos para filtros e relatórios de auditoria)
-* **`saldos_depix`:**
-    * PK: `id` (Índice Clusterizado - se INT auto-incremento)
-    * FK: `id_usuario` (Índice Secundário para joins)
-    * FK: `id_deposito` (Índice Secundário para joins)
-    * FK: `id_conversao` (Índice Secundário para joins)
-    * Índice para consultas por `id_usuario`, `data_ocorrencia` (Índice Composto para consultas de histórico de saldo)
-    * Índice para consultas por `tipo_transacao` (Índice Secundário, se usado em relatórios)
-
-Este DER Final Unificado - Versão 4 (Final) representa um modelo de dados robusto, seguro e escalável para o sistema de pagamentos BRL-USDT. A implementação cuidadosa deste DER, juntamente com a atenção aos pontos de melhoria e sugestões de índices, fornecerá uma base sólida para o desenvolvimento e operação do sistema.}}
-</DER_ATUAL>
-
-<SUGESTAO_MELHORIA>
-{{Falta de Entidade Cobrancas_PIX: O fluxo inicia com a "geração de cobrança via PIX" pelo usuário, mas o DER não modela explicitamente essa "cobrança".  Gargalo de Rastreabilidade Inicial:  Atualmente, o ponto de entrada rastreável é o deposito.  Não há como vincular um deposito a uma cobrança PIX específica gerada. Isso dificulta rastrear qual cobrança PIX (e seus detalhes, como pix_copia_cola, qr_code_base64, txid - caso disponível do PSP) originou um deposito.
-
-
-Melhoria Crítica:  Introduzir uma entidade cobrancas_pix para representar a solicitação de pagamento PIX gerada para o usuário.
-
-
-Relacionamento Adicional: cobrancas_pix 1:1 depositos (Opcional, via id_deposito na cobrancas_pix). Uma cobrança PIX paga pode gerar no máximo um deposito. Um deposito sempre deve ser originado de uma cobranca_pix.  A relação 1:1 é garantida pelo UNIQUE constraint em id_deposito na tabela cobrancas_pix.
-
-
-Benefícios:
-
-
-
-Rastreabilidade Completa: Permite rastrear desde a intenção de pagamento (cobrança PIX) até o depósito em DEPIX e subsequente conversão para USDT.
-
-Conciliação Automática: O campo txid_psp (se disponível) facilitará a conciliação automática de pagamentos PIX com depósitos na plataforma, especialmente se a plataforma receber notificações do PSP.
-
-Gestão de Cobranças: Permite gerenciar o status das cobranças (pendente, paga, expirada, cancelada) e implementar lógica de re-tentativa ou expiração de cobranças.
-
-Dashboards Mais Informativos:  Possibilita dashboards que mostrem as cobranças geradas, pagas, pendentes, taxas de conversão de cobranças em depósitos, etc.}}
-</SUGESTAO_MELHORIA>
+ Você é um arquiteto de dados especialista em modelagem relacional com foco em produtos digitais escaláveis. Sua tarefa é analisar um DER atual de um sistema de pagamentos e, com base em uma sugestão de melhoria específica, ajustar e aprimorar esse modelo de forma inteligente, mantendo as funções mínimas viáveis (MVP) e preparando-o para escala futura.
+ </task>
+ 
+ <contexto>
+ O DER enviado representa a versão atual do banco de dados em uso ou em desenvolvimento. A sugestão adicional tem o objetivo de melhorar uma parte específica do modelo — seja em rastreabilidade, performance, normalização, separação de responsabilidades, flexibilidade ou suporte a novas funcionalidades.
+ 
+ Você deve:
+ - Entender o funcionamento do sistema proposto no DER;
+ - Avaliar o impacto e a relevância da sugestão recebida;
+ - Atualizar o DER da melhor maneira possível, mantendo simplicidade para o MVP e pensando na escalabilidade futura.
+ 
+ </contexto>
+ 
+ <instruções>
+ 1. Analise criticamente o DER original para entender sua estrutura e lógica de dados;
+ 2. Avalie tecnicamente a sugestão de melhoria recebida, considerando:
+    - Se ela faz sentido para o estágio atual do produto (MVP);
+    - Se ela ajuda a evitar problemas futuros de escala, manutenção ou performance;
+ 3. Ajuste o DER atual para incorporar essa melhoria, de forma eficiente e coerente com o restante da estrutura;
+ 4. Mantenha uma linguagem técnica, clara e objetiva.
+ 
+ Sua saída deve conter:
+ - O DER atualizado (pode ser descritivo ou estruturado em texto com entidades, atributos e relacionamentos);
+ - Justificativas técnicas para as mudanças aplicadas;
+ - Possíveis riscos ou cuidados relacionados à nova modelagem;
+ - Sugestões de boas práticas para garantir escalabilidade e integridade dos dados.
+ 
+ </instruções>
+ 
+ <DER_ATUAL>
+ {{DER_ATUAL}}
+ </DER_ATUAL>
+ 
+ <SUGESTAO_MELHORIA>
+ {{SUGESTAO_MELHORIA}}
+ </SUGESTAO_MELHORIA>
