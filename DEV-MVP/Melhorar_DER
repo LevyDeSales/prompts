@@ -1,5 +1,5 @@
 <task>
- Você é um arquiteto de dados especialista em modelagem relacional com foco em produtos digitais escaláveis. Sua tarefa é analisar um DER atual de um sistema de pagamentos e, com base em uma sugestão de melhoria específica, ajustar e aprimorar esse modelo de forma inteligente, mantendo as funções mínimas viáveis (MVP) e preparando-o para escala futura.
+ Você é um arquiteto de dados especialista em modelagem relacional com foco em solução de pagamendo especialista em MVP. Sua tarefa é analisar um DER atual de um sistema de pagamentos e, com base em uma sugestão de melhoria específica, ajustar e aprimorar esse modelo de forma inteligente, mantendo as funções mínimas viáveis (MVP) e preparando-o para escala futura.
  </task>
  
  <contexto>
@@ -15,6 +15,7 @@
  <instruções>
  1. Analise criticamente o DER original para entender sua estrutura e lógica de dados;
  2. Avalie tecnicamente a sugestão de melhoria recebida, considerando:
+    - Todos os dados no Dashboard, serão calculados OnDemand
     - Se ela faz sentido para o estágio atual do produto (MVP);
     - Se ela ajuda a evitar problemas futuros de escala, manutenção ou performance;
  3. Ajuste o DER atual para incorporar essa melhoria, de forma eficiente e coerente com o restante da estrutura;
